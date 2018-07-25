@@ -1,0 +1,47 @@
+<h2>Prize lottery</h2>
+<h3>List of purchasers:</h3>
+<ul>
+    <li ng-repeat="purchaser in dc.allPurchasers">
+        {{purchaser.name}}
+        - <a ng-if="dc.allPurchasers.length > 1" ng-click="dc.selectOne(purchaser.dni)">View purchased</a>
+         <a ng-if="dc.allPurchasers.length == 1" ng-click="dc.loadAllBuyers()">Cancel</a>
+    </li>
+    <div ng-if="dc.allPurchasers.length == 1">
+      <br>
+      <h4>Furniture purchased:</h4>
+      <br>
+      <table ng-if="dc.products.length" class = "table table-striped table-bordered table-hover">
+        <thead>
+          <tr class = "info">
+            <th>Name</th>
+            <th>Model</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat = "product in dc.products">
+            <td>{{ product.name }}</td>
+            <td>{{ product.model }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+</ul>
+<br>
+<div ng-if="dc.allPurchasers.length != 1">
+  <h3>List of available purchasers for lottery:</h3>
+  <ul>
+      <li ng-repeat="aBuyer in dc.allAvailableBuyers">
+          {{aBuyer.name}}
+      </li>
+  </ul>
+  <button type="button" ng-click="dc.getWinners()" class="btn btn-primary">Make draw of lottery</button>
+  <h3>Winner: {{dc.winner.name}}</h3>
+  <br>
+  <h4>List of winners:</h4>
+  <ul>
+      <li ng-repeat="winner in dc.winners">
+          {{winner.name}}
+      </li>
+
+  </ul>
+</div>
