@@ -39,8 +39,8 @@
         <td>{{ product.model }}</td>
         <td>{{ product.amount }}</td>
         <td>
-          <a ng-click="edit(product.id)" role = "button" class = "btn btn-info">edit</a>
-          <a ng-click="delete(product.id)" role = "button" class = "btn btn-danger">delete</a>
+          <a ng-click="pc.editProduct(product.id)" role = "button" class = "btn btn-info">edit</a>
+          <a ng-click="pc.deleteProduct(product.name, product.id)" role = "button" class = "btn btn-danger">delete</a>
         </td>
       </tr>
     </tbody>

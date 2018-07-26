@@ -51,25 +51,56 @@ angular.module('aPpApp')
       })
     }
 
+    cntrl.selectedList = {};
+    cntrl.amountList = {};
     function ProductToBuy(item){
-      item.datePurchased = UtilService.currentDate();
-      // console.log(item);
-      cntrl.toPurchase.push(item);
+      let indexOfItem = cntrl.toPurchase.indexOf(item);
+      if (indexOfItem === -1) {
+        cntrl.toPurchase.push(item);
+      } else {
+        cntrl.toPurchase.splice(indexOfItem, 1)
+      }
+      //item.datePurchased = UtilService.currentDate();
+      // console.log(cntrl.selectedList);
     }
 
     function CommitPurchase(){
       if (cntrl.allUsers.length === 1){
         // console.log(cntrl.allUsers);
         // console.log(cntrl.toPurchase);
-        let customer = cntrl.allUsers[0];
-        customer.products = cntrl.toPurchase;
-        // console.log(customer);
-        console.log(JSON.stringify(customer));
-        // UserService.Update()
-        UserService.Update(customer).then(function(response){
-          //response logic
-        });
+        // let customer = cntrl.allUsers[0];
+
+        // creation of a transaction
+        let transaction = {};
+        transaction.custDni = cntrl.allUsers[0].dni;
+        transaction.productOrders = [];
+        // console.log(cntrl.amountList);
+        for(let key in cntrl.amountList){
+          // console.log(key + ': ' + cntrl.amountList[key]);
+          transaction.productOrders.push({
+            prodId : parseInt(key),
+            amount : cntrl.amountList[key]
+          });
+        }
+        // transaction.purchasedAt = UtilService.currentDate();
+        // transaction.purchasedAt = JSON.stringify(new Date());
+        transaction.purchasedAt = UtilService.fixedDate();
+        console.log(transaction);
+        console.log(JSON.stringify(transaction));
+
+        PurchaseService.createTransaction(transaction).then(function(){
+          // response logic
+        })
+
+        // customer.products = cntrl.toPurchase;
+        // // console.log(customer);
+        // console.log(JSON.stringify(customer));
+        // // UserService.Update()
+        // UserService.Update(customer).then(function(response){
+        //   //response logic
+        // });
       }
+      // console.log(cntrl.amountList);
     }
 
   }]);

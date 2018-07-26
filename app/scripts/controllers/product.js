@@ -12,7 +12,8 @@ angular.module('aPpApp')
     var vm = this;
     vm.cleanFields = cleanFields;
     vm.saveProduct = saveProduct;
-    // vm.saveModel = saveModel;
+    vm.editProduct = editProduct;
+    vm.deleteProduct = deleteProduct;
     vm.models = [];
     vm.products = [];
     initProdServ();
@@ -46,8 +47,8 @@ angular.module('aPpApp')
         return;
       }
       vm.product.model = vm.model.name;
-      vm.product.dateCreated = UtilService.currentDate();
-      //console.log(vm.product);
+      vm.product.dateCreated = UtilService.fixedDate();
+      // console.log(JSON.stringify(vm.product));
       ProductService.Create(vm.product)
         .then(function(response){
           // if(response.success){
@@ -63,6 +64,7 @@ angular.module('aPpApp')
     function cleanFields(){
       vm.product.name = '';
       vm.product.amount = '';
+      loadAllModels();
     }
 
     function loadAllProducts(){
@@ -72,5 +74,16 @@ angular.module('aPpApp')
       });
     }
 
+    function editProduct(id) {
+      console.log("should edit product");
+    }
+
+    function deleteProduct(name, id) {
+      if (confirm("Are you sure delete " + name + " product?")) {
+        console.log("delete " + id);
+      } else {
+        console.log("not delete " + id);
+      }
+    }
 
   }]);

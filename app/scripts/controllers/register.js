@@ -14,6 +14,10 @@ angular.module('aPpApp')
 
     vm.register = register;
     vm.cleanFields = cleanFields;
+    vm.allUsers = [];
+    vm.deleteCustomer = deleteCustomer;
+    vm.editCustomer = editCustomer;
+    vm.updateCustomer = updateCustomer; //need implementation 
     vm.user = {};
 
     function register() {
@@ -46,11 +50,6 @@ angular.module('aPpApp')
       // cleanFields();
     }
 
-    // var dr = this;
-    vm.allUsers = [];
-    vm.deleteCustomer = deleteCustomer;
-    vm.editCustomer = editCustomer;
-
     function loadAllUsers() {
       UserService.GetAll().then(function (users) {
         vm.allUsers = users;
@@ -74,6 +73,14 @@ angular.module('aPpApp')
     }
 
     function editCustomer(dni) {
-      console.log(vm.allUsers);
+      for (var i = 0; i < vm.allUsers.length; i++) {
+        if(vm.allUsers[i].dni === dni){
+          vm.user.name = vm.allUsers[i].name;
+          vm.user.dni = vm.allUsers[i].dni;
+          vm.user.address = vm.allUsers[i].address;
+          vm.user.email = vm.allUsers[i].email;
+          vm.user.phone = vm.allUsers[i].phone;
+        }
+      }
     }
   }]);
