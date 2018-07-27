@@ -17,7 +17,7 @@ angular.module('aPpApp')
     vm.allUsers = [];
     vm.deleteCustomer = deleteCustomer;
     vm.editCustomer = editCustomer;
-    vm.updateCustomer = updateCustomer; //need implementation 
+    vm.updateCustomer = updateCustomer; //need implementation
     vm.user = {};
 
     function register() {
@@ -82,5 +82,9 @@ angular.module('aPpApp')
           vm.user.phone = vm.allUsers[i].phone;
         }
       }
+    }
+
+    function updateCustomer(){
+      
     }
   }]);
