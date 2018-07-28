@@ -71,25 +71,37 @@ angular.module('aPpApp')
         // let customer = cntrl.allUsers[0];
 
         // creation of a transaction
-        let transaction = {};
-        transaction.custDni = cntrl.allUsers[0].dni;
-        transaction.productOrders = [];
-        // console.log(cntrl.amountList);
+        let prodOrderList = [];
         for(let key in cntrl.amountList){
           // console.log(key + ': ' + cntrl.amountList[key]);
-          transaction.productOrders.push({
+          prodOrderList.push({
             prodId : parseInt(key),
             amount : cntrl.amountList[key]
           });
         }
+
+        let transaction = {};
+
+        transaction.custDni = cntrl.allUsers[0].dni;
+        // transaction.productOrders = [];
+        transaction.customerOrders = [];
+        // console.log(cntrl.amountList);
+
+        transaction.customerOrders.push({
+          productOrders : prodOrderList,
+          purchasedAt : UtilService.fixedDate()
+        });
+
+
         // transaction.purchasedAt = UtilService.currentDate();
         // transaction.purchasedAt = JSON.stringify(new Date());
-        transaction.purchasedAt = UtilService.fixedDate();
-        console.log(transaction);
-        console.log(JSON.stringify(transaction));
+        // transaction.purchasedAt = UtilService.fixedDate();
+        // console.log(transaction);
+        // console.log(JSON.stringify(transaction));
 
         PurchaseService.createTransaction(transaction).then(function(){
           // response logic
+          initController();
         })
 
         // customer.products = cntrl.toPurchase;

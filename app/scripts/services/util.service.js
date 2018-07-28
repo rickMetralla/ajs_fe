@@ -24,7 +24,6 @@ angular.module('aPpApp')
         if(dd<10) {
             dd = '0'+dd
         }
-
         if(mm<10) {
             mm = '0'+mm
         }
@@ -32,14 +31,12 @@ angular.module('aPpApp')
         today = yyyy + '-' + mm + '-' + dd;
         return today;
       },
-      
       fixedDate: function() {
         let date = new Date();
         date.setHours(date.getHours() - date.getTimezoneOffset() / 60);
         let fixDate = date.toISOString();
         fixDate = fixDate.replace("T", "@").replace("Z","");
         return fixDate;
-
       }
     };
   });
