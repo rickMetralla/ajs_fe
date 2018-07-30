@@ -37,6 +37,17 @@ angular.module('aPpApp')
         let fixDate = date.toISOString();
         fixDate = fixDate.replace("T", "@").replace("Z","");
         return fixDate;
+      },
+      convertToDate: function(stringDate){
+        let newDate = stringDate.split("@")[0];
+        return new Date(newDate);
+      },
+      fixDate: function(failDate){
+        // let date = new Date();
+        failDate.setHours(failDate.getHours() - failDate.getTimezoneOffset() / 60);
+        let fixDate = failDate.toISOString();
+        fixDate = fixDate.replace("T", "@").replace("Z","");
+        return fixDate;
       }
     };
   });

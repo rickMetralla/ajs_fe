@@ -13,6 +13,17 @@ angular.module('aPpApp')
 
     var service = {};
     service.createTransaction = createTransaction;
+    service.GetAllPurchaser = GetAllPurchaser;
+
+    function GetAllPurchaser() {
+      return $http.get('http://localhost:8080/purchasers').then(function(response){
+        if(response.status != 200){
+          alert("something went wrong getting models");
+        }else{
+          return response.data;
+        }
+      });
+    }
 
     function createTransaction(transaction) {
       var req = {

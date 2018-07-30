@@ -9,7 +9,7 @@
             <label for="dni">Dni:</label>
             <input type="number" name="dni" id="dni" min="99" max="2147483647" class="form-control" ng-model="reg.user.dni" required />
         </div>
-        <div class="form-group" ng-class="{ 'has-error': form.address.$dirty }">
+        <div class="form-group">
             <label for="address">Address:</label>
             <input type="text" name="address" id="address" class="form-control" ng-model="reg.user.address" />
         </div>
@@ -17,7 +17,7 @@
             <label for="email">E-mail:</label>
             <input type="email" pattern="[A-Za-z0-9._+-]+@[a-z0-9.-]+\.[a-z]{2,4}" name="email" id="email" class="form-control" ng-model="reg.user.email" required />
         </div>
-        <div class="form-group" ng-class="{ 'has-error': form.phone.$dirty }">
+        <div class="form-group" >
             <label for="phone">Phone:</label>
             <input type="number" name="phone" id="phone" min="99" max="2147483647" class="form-control" ng-model="reg.user.phone" />
         </div>

@@ -31,24 +31,23 @@ angular.module('aPpApp')
 
     function loadAllUsers() {
       UserService.GetAll().then(function (customers) {
-        // console.log("arrived")
-        // console.log(customers);
         cntrl.allUsers = customers;
       });
+      loadAllPurchasers();
       cntrl.toPurchase = [];
+      cntrl.products = [];
     }
 
     function selectOne(dni) {
-      UserService.GetByDni(dni)
-      .then(function(customer) {
+      UserService.GetByDni(dni).then(function(customer) {
         cntrl.allUsers = [customer];
-      })
+      });
     }
 
     function getAllProducts(){
       ProductService.GetAll().then(function(products){
         cntrl.allProducts = products;
-      })
+      });
     }
 
     cntrl.selectedList = {};
@@ -60,59 +59,70 @@ angular.module('aPpApp')
       } else {
         cntrl.toPurchase.splice(indexOfItem, 1)
       }
-      //item.datePurchased = UtilService.currentDate();
-      // console.log(cntrl.selectedList);
     }
 
     function CommitPurchase(){
       if (cntrl.allUsers.length === 1){
-        // console.log(cntrl.allUsers);
-        // console.log(cntrl.toPurchase);
-        // let customer = cntrl.allUsers[0];
+        if(cntrl.purchaseDate === undefined){
+          alert("Set date is mandatory");
+          return;
+        }
 
         // creation of a transaction
         let prodOrderList = [];
         for(let key in cntrl.amountList){
-          // console.log(key + ': ' + cntrl.amountList[key]);
           prodOrderList.push({
             prodId : parseInt(key),
             amount : cntrl.amountList[key]
           });
         }
 
+        if(prodOrderList.length === 0){
+          alert("Needs to select one product at least")
+        }
+
         let transaction = {};
 
         transaction.custDni = cntrl.allUsers[0].dni;
-        // transaction.productOrders = [];
         transaction.customerOrders = [];
-        // console.log(cntrl.amountList);
 
         transaction.customerOrders.push({
           productOrders : prodOrderList,
-          purchasedAt : UtilService.fixedDate()
+          purchasedAt : UtilService.fixDate(cntrl.purchaseDate)
         });
 
-
-        // transaction.purchasedAt = UtilService.currentDate();
-        // transaction.purchasedAt = JSON.stringify(new Date());
-        // transaction.purchasedAt = UtilService.fixedDate();
-        // console.log(transaction);
-        // console.log(JSON.stringify(transaction));
-
         PurchaseService.createTransaction(transaction).then(function(){
-          // response logic
           initController();
-        })
-
-        // customer.products = cntrl.toPurchase;
-        // // console.log(customer);
-        // console.log(JSON.stringify(customer));
-        // // UserService.Update()
-        // UserService.Update(customer).then(function(response){
-        //   //response logic
-        // });
+        });
       }
-      // console.log(cntrl.amountList);
+    }
+
+
+
+    cntrl.allPurchasers = [];
+    cntrl.selectedPurchaser = [];
+    cntrl.products = [];
+    cntrl.viewPurchase = viewPurchase;
+    cntrl.loadAllPurchasers = loadAllPurchasers;
+
+    function viewPurchase(dni){
+      UserService.GetByDni(dni).then(function(purchaser) {
+        // console.log(purchaser);
+        cntrl.selectedPurchaser = [purchaser];
+
+        for (var i = 0; i < cntrl.allPurchasers.length; i++) {
+          if (cntrl.allPurchasers[i].custDni === dni){
+            cntrl.products = cntrl.allPurchasers[i].customerOrders;
+          }
+        }
+      });
+    }
+
+    function loadAllPurchasers() {
+      PurchaseService.GetAllPurchaser().then(function(purchasers){
+        cntrl.allPurchasers = purchasers;
+        cntrl.selectedPurchaser = [];
+      });
     }
 
   }]);
