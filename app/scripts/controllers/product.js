@@ -16,6 +16,7 @@ angular.module('aPpApp')
     vm.deleteProduct = deleteProduct;
     vm.models = [];
     vm.products = [];
+    vm.product = {};
     initProdServ();
 
     function initProdServ(){
@@ -26,21 +27,10 @@ angular.module('aPpApp')
     function loadAllModels() {
       ProductService.GetAllModels()
           .then(function (response_models) {
-              // console.log("arrived")
               vm.models = response_models;
           });
     }
 
-    // function saveModel(){
-    //   if(vm.product == undefined){
-    //     alert("fill necessary values")
-    //     return;
-    //   }
-    //   vm.product.dateCreated = UtilService.currentDate();
-    //   console.log(vm.product);
-    // }
-
-    // console.log(UtilService.currentDate());
     function saveProduct(){
       if(vm.product == undefined){
         alert("fill necessary values");
@@ -48,14 +38,8 @@ angular.module('aPpApp')
       }
       vm.product.model = vm.model.name;
       vm.product.dateCreated = UtilService.fixedDate();
-      // console.log(JSON.stringify(vm.product));
       ProductService.Create(vm.product)
         .then(function(response){
-          // if(response.success){
-        //   alert("product saved successfully!")
-        // }else{
-        //   alert("[Error] something went wrong...")
-        // }
         loadAllProducts()
         cleanFields();
       });
@@ -69,21 +53,31 @@ angular.module('aPpApp')
 
     function loadAllProducts(){
       ProductService.GetAll().then(function(response){
-        // console.log(response);
         vm.products = response;
       });
     }
 
-    function editProduct(id) {
-      console.log("should edit product");
+    vm.model = {};
+    function editProduct(prod) {
+      // console.log(prod);
+      vm.product.name = prod.name;
+      vm.product.amount = prod.amount;
+      vm.model.name = prod.model;
     }
 
     function deleteProduct(name, id) {
       if (confirm("Are you sure delete " + name + " product?")) {
-        console.log("delete " + id);
+        ProductService.Delete(id).then(function(){
+          loadAllProducts();
+          cleanFields();
+        })
       } else {
         console.log("not delete " + id);
       }
+    }
+
+    function validator(product){
+      
     }
 
   }]);
