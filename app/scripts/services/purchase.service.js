@@ -16,7 +16,7 @@ angular.module('aPpApp')
     service.GetAllPurchaser = GetAllPurchaser;
 
     function GetAllPurchaser() {
-      return $http.get('http://localhost:8080/purchasers').then(function(response){
+      return $http.get('http://localhost:8080/purchases').then(function(response){
         if(response.status != 200){
           alert("something went wrong getting models");
         }else{
@@ -28,7 +28,7 @@ angular.module('aPpApp')
     function createTransaction(transaction) {
       var req = {
         method: 'POST',
-        url: 'http://localhost:8080/purchase',
+        url: 'http://localhost:8080/purchases',
         headers: {
           'Content-Type':'application/json'
         },

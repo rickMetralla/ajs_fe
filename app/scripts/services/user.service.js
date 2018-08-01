@@ -16,7 +16,7 @@ angular.module('aPpApp')
       function GetAll() {
         var req = {
           method: 'GET',
-          url: 'http://localhost:8080/customers/',
+          url: 'http://localhost:8080/customers',
           headers: {
             'Content-Type':'application/json'
           }
@@ -25,13 +25,13 @@ angular.module('aPpApp')
       }
 
       function GetByDni(dni) {
-          return $http.get('http://localhost:8080/customer/' + dni).then(handleSuccess, handleError('Error getting user by id'));
+          return $http.get('http://localhost:8080/customers/' + dni).then(handleSuccess, handleError('Error getting user by id'));
       }
 
       function Create(user) {
         var req = {
           method: 'POST',
-          url: 'http://localhost:8080/customer/',
+          url: 'http://localhost:8080/customers',
           headers: {
             'Content-Type':'application/json'
           },
@@ -44,7 +44,7 @@ angular.module('aPpApp')
       function Update(user) {
         var req = {
           method: 'PUT',
-          url: 'http://localhost:8080/customer/',
+          url: 'http://localhost:8080/customers',
           headers: {
             'Content-Type':'application/json'
           },
@@ -54,7 +54,7 @@ angular.module('aPpApp')
       }
 
       function Delete(id) {
-          return $http.delete('http://localhost:8080/customer/' + id).then(handleSuccess, handleError('Error deleting user'));
+          return $http.delete('http://localhost:8080/customers/' + id).then(handleSuccess, handleError('Error deleting user'));
       }
 
       // private functions
