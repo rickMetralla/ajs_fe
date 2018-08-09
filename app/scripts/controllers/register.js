@@ -8,10 +8,10 @@
  * Controller of the aPpApp
  */
 angular.module('aPpApp')
-  .controller('RegisterCtrl', ['UserService', 'FlashService', function (UserService, FlashService) {
+  .controller('RegisterCtrl', ['UserService', 'UtilService', function (UserService, UtilService) {
 
     var vm = this;
-
+    vm.registerNew = true;
     vm.register = register;
     vm.cleanFields = cleanFields;
     vm.allUsers = [];
@@ -21,18 +21,16 @@ angular.module('aPpApp')
     vm.user = {};
 
     function register() {
-      //console.log(vm.user);
+      let message = UtilService.validateCustomerFields(vm.user);
+      if (message !== ""){
+        alert(message);
+        return;
+      }
       UserService.Create(vm.user).then(function (response) {
-        if (response.success) {
-            FlashService.Success('Registration successful', true);
-            // $location.path('/register');
-        } else {
-            FlashService.Error(response.message);
-        }
+        $('#registerModal').modal('hide'); // should be called by angular
         loadAllUsers();
         cleanFields();
       });
-      // loadAllUsers();
     }
 
     function cleanFields() {
@@ -41,13 +39,15 @@ angular.module('aPpApp')
       vm.user.address = '';
       vm.user.email = '';
       vm.user.phone = '';
+      vm.registerNew = true;
     }
 
     initController();
 
     function initController() {
       loadAllUsers();
-      // cleanFields();
+      cleanFields();
+      vm.registerNew = true;
     }
 
     function loadAllUsers() {
@@ -64,27 +64,21 @@ angular.module('aPpApp')
           loadAllUsers();
         })
       } else {
-        console.log("not deleted");
-      }
-      // UserService.Delete(dni)
-      // .then(function() {
-      //   loadAllUsers();
-      // })
-    }
-
-    function editCustomer(dni) {
-      for (var i = 0; i < vm.allUsers.length; i++) {
-        if(vm.allUsers[i].dni === dni){
-          vm.user.name = vm.allUsers[i].name;
-          vm.user.dni = vm.allUsers[i].dni;
-          vm.user.address = vm.allUsers[i].address;
-          vm.user.email = vm.allUsers[i].email;
-          vm.user.phone = vm.allUsers[i].phone;
-        }
+        console.log(dni + " not deleted yet");
       }
     }
 
-    function updateCustomer(){
-      
+    function editCustomer(customer) {
+      vm.registerNew = false;
+      vm.user.name = customer.name;
+      vm.user.dni = customer.dni;
+      vm.user.address = customer.address;
+      vm.user.email = customer.email;
+      vm.user.phone = customer.phone;
+    }
+
+    function updateCustomer(customer){
+      // console.log(customer);
+      vm.registerNew = true;
     }
   }]);

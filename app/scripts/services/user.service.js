@@ -37,7 +37,6 @@ angular.module('aPpApp')
           },
           data: JSON.stringify(user)
         }
-        // console.log(req.data);
         return $http(req).then(handleSuccess, handleError('Error creating user'));
       }
 

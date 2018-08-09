@@ -48,6 +48,28 @@ angular.module('aPpApp')
         let fixDate = failDate.toISOString();
         fixDate = fixDate.replace("T", "@").replace("Z","");
         return fixDate;
+      },
+      validateCustomerFields: function(customer){
+        // console.log("validating fields...");
+        let regex = new RegExp("[a-zA-Z ]+")
+        let message = "";
+        if(customer.name === ""){
+          message = "Name field cannot be empty";
+        }else if(!regex.test(customer.name)){
+          message = "Name field just allow alphabetic characters";
+        }else if (customer.dni === ""){
+            message = "Dni field cannot be empty";
+        }else if (customer.address === ""){
+          message = "Address field cannot be empty";
+        }else if (customer.email === ""){
+          message = "Email field cannot be empty";
+        }else if(customer.phone === ""){
+          message = "Phone field cannot be empty";
+        }
+        return message;
+      },
+      validateProductFields: function(product){
+
       }
     };
   });

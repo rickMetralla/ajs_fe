@@ -70,6 +70,7 @@ angular.module('aPpApp')
 
         // creation of a transaction
         let prodOrderList = [];
+        console.log(cntrl.amountList);
         for(let key in cntrl.amountList){
           prodOrderList.push({
             prodId : parseInt(key),
@@ -84,9 +85,9 @@ angular.module('aPpApp')
         let transaction = {};
 
         transaction.custDni = cntrl.allUsers[0].dni;
-        transaction.customerOrders = [];
+        transaction.invoices = [];
 
-        transaction.customerOrders.push({
+        transaction.invoices.push({
           productOrders : prodOrderList,
           purchasedAt : UtilService.fixDate(cntrl.purchaseDate)
         });
