@@ -1,50 +1,33 @@
-<h3><b>Register product:</b></h3>
-<div>
-  <form role = "form" class="well" ng-hide="ifSearchUser">
-    <div class = "form-group">
-      <label for = "name"> Name:  </label>
-      <input type = "text" id = "name" class = "form-control" placeholder = "Enter Name " ng-model = "pc.product.name" required>
-    </div>
-    <div class = "form-group">
-      <label for = "model"> Model:  </label>
-      <!-- <input type = "text" id = "model" class = "form-control" placeholder = "Enter Model " ng-model = "pc.product.model" required> -->
-      <select id="select" ng-model="pc.model" ng-options="model as model.name for model in pc.models">
-        <option value="">***Select a model***</option>
-      </select>
-    </div>
-      <div class = "form-group">
-      <label for = "amount"> Amount:  </label>
-    <input type = "number" id = "amount" class = "form-control" placeholder = "Enter Amount " ng-model = "pc.product.amount" required>
-    </div>
-      <input type="button" class="btn btn-primary" ng-click="pc.saveProduct()" class="btn btn-primary" value = "Save">
-  </form>
-</div>
-
-<hr>
 <div>
   <h4><b>Registered products:</b></h4>
   <label for="input"> Search: <input ng-model="pc.searchText" placeholder="Product name"></label>
-  <table ng-if="pc.products.length" class = "table table-striped table-bordered table-hover">
-    <thead>
-      <tr class = "info">
-        <th>Name</th>
-        <th>Model</th>
-        <th>Amount</th>
-        <th>Action</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr ng-repeat = "product in pc.products | filter:pc.searchText">
-        <td>{{ product.name }}</td>
-        <td>{{ product.model }}</td>
-        <td>{{ product.amount }}</td>
-        <td>
-          <a ng-click="pc.editProduct(product)" role = "button" class = "btn btn-info">edit</a>
-          <a ng-click="pc.deleteProduct(product.name, product.id)" role = "button" class = "btn btn-danger">delete</a>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+  <div class="scroll-table">
+    <table ng-if="pc.products.length" class = "table table-striped table-bordered table-hover">
+      <thead>
+        <tr class = "info">
+          <th>Name</th>
+          <th>Model</th>
+          <th>Amount</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat = "product in pc.products | filter:pc.searchText">
+          <td>{{ product.name }}</td>
+          <td>{{ product.model }}</td>
+          <td>{{ product.amount }}</td>
+          <td>
+            <a ng-click="pc.editProduct(product)" role = "button" class = "btn btn-info">edit</a>
+            <a ng-click="pc.deleteProduct(product.name, product.id)" role = "button" class = "btn btn-danger">delete</a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
   <div ng-hide="pc.products.length > 0">No Products Found</div>
   </div>
  </div>
+
+ <hr>
+ <button class="btn btn-primary" ng-click="pc.openDialog()">Add new Product</button>
+ <br>

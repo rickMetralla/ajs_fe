@@ -8,8 +8,9 @@
  * Controller of the aPpApp
  */
 angular.module('aPpApp')
-  .controller('ProductCtrl', ['UtilService', 'ProductService', function (UtilService, ProductService) {
+  .controller('ProductCtrl', ['UtilService', 'ProductService', '$uibModal', function (UtilService, ProductService, $uibModal) {
     var vm = this;
+    vm.openDialog = openDialog;
     vm.cleanFields = cleanFields;
     vm.saveProduct = saveProduct;
     vm.editProduct = editProduct;
@@ -31,18 +32,18 @@ angular.module('aPpApp')
           });
     }
 
-    function saveProduct(){
-      if(vm.product == undefined){
-        alert("fill necessary values");
+    function saveProduct(product){
+      if(product == undefined){
+        alert("not valid product");
         return;
       }
-      vm.product.model = vm.model.name;
-      vm.product.dateCreated = UtilService.fixedDate();
-      ProductService.Create(vm.product)
-        .then(function(response){
-        loadAllProducts()
-        cleanFields();
-      });
+      console.log(product);
+      console.log('creating product');
+      // ProductService.Create(product)
+      //   .then(function(response){
+      //   loadAllProducts()
+      //   cleanFields();
+      // });
     }
 
     function cleanFields(){
@@ -76,8 +77,26 @@ angular.module('aPpApp')
       }
     }
 
-    function validator(product){
-      
+    function openDialog(){
+      // console.log(vm.models);
+      var modalInstance = $uibModal.open({
+        templateUrl: "views/dialogModal.html",
+        controller: "dialogController",
+        controllerAs: 'dc',
+        size: "md",
+        resolve: {     //data before open modal to populate on it
+          params: function () {
+            return vm.models;
+          }
+        }
+      });
+
+      modalInstance.result.then(function (result){
+        saveProduct(result);
+      }, function () {
+        console.log("Dialog dismissed");
+      });
     }
+
 
   }]);

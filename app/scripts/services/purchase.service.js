@@ -17,7 +17,7 @@ angular.module('aPpApp')
 
     function GetAllPurchaser() {
       return $http.get('http://localhost:8080/purchases').then(function(response){
-        if(response.status != 200){
+        if(response.status !== 200){
           alert("something went wrong getting models");
         }else{
           return response.data;
@@ -33,7 +33,7 @@ angular.module('aPpApp')
           'Content-Type':'application/json'
         },
         data: JSON.stringify(transaction)
-      }
+      };
       // console.log(req.data);
       return $http(req).then(handleSuccess, handleError('Error creating purchase transaction'));
     }

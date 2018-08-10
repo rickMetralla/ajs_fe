@@ -13,11 +13,6 @@ angular.module('aPpApp')
 
     initController();
 
-    function initController() {
-      loadLotteries();
-      getActiveLottery();
-    }
-
     var dr = this;
     dr.create = false;
     dr.activeLottery = {};
@@ -36,6 +31,11 @@ angular.module('aPpApp')
     dr.winners = [];
     dr.getWinners = [];
     dr.complete = complete;
+
+    function initController() {
+      loadLotteries();
+      getActiveLottery();
+    }
 
     function openCreateOption(){
       dr.create = true;

@@ -20,7 +20,7 @@ angular.module('aPpApp')
           headers: {
             'Content-Type':'application/json'
           }
-        }
+        };
         return $http(req).then(handleSuccess, handleError('Error getting all users'));
       }
 
@@ -36,7 +36,7 @@ angular.module('aPpApp')
             'Content-Type':'application/json'
           },
           data: JSON.stringify(user)
-        }
+        };
         return $http(req).then(handleSuccess, handleError('Error creating user'));
       }
 
@@ -48,7 +48,7 @@ angular.module('aPpApp')
             'Content-Type':'application/json'
           },
           data: JSON.stringify(user)
-        }
+        };
         return $http(req).then(handleSuccess, handleError('Error updating user'));
       }
 

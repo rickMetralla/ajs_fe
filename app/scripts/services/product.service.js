@@ -24,7 +24,7 @@ angular.module('aPpApp')
     function GetAllModels() {
       // return $http.get('http://localhost:8080/pmodels').then(handleSuccess, handleError('Error getting product by id'));
       return $http.get('http://localhost:8080/pmodels').then(function(response){
-        if(response.status != 200){
+        if(response.status !== 200){
           alert("something went wrong getting models");
         }else{
           return response.data;
@@ -40,7 +40,7 @@ angular.module('aPpApp')
         headers: {
           'Content-Type':'application/json'
         }
-      }
+      };
       return $http(req).then(handleSuccess, handleError('Error getting all products'));
     }
 
@@ -56,7 +56,7 @@ angular.module('aPpApp')
           'Content-Type':'application/json'
         },
         data: JSON.stringify(product)
-      }
+      };
       // console.log(req.data);
       return $http(req).then(handleSuccess, handleError('Error creating product'));
     }
@@ -69,7 +69,7 @@ angular.module('aPpApp')
           'Content-Type':'application/json'
         },
         data: JSON.stringify(product)
-      }
+      };
       return $http(req).then(handleSuccess, handleError('Error updating product'));
     }
 

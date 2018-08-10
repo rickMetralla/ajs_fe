@@ -27,13 +27,13 @@ angular.module('aPpApp')
           'Content-Type':'application/json'
         },
         data: JSON.stringify(lot)
-      }
+      };
       return $http(req).then(handleSuccess, handleError('Error creating lottery season'));
     }
 
     function getSeasons(){
       return $http.get('http://localhost:8080/lots').then(function(response){
-        if(response.status != 200){
+        if(response.status !== 200){
           alert("something went wrong getting models");
         }else{
           return response.data;
@@ -43,7 +43,7 @@ angular.module('aPpApp')
 
     function getSeason(id){
       return $http.get('http://localhost:8080/lot/' + id).then(function(response){
-        if(response.status != 200){
+        if(response.status !== 200){
           alert("something went wrong getting models");
         }else{
           return response.data;
@@ -63,13 +63,13 @@ angular.module('aPpApp')
           'Content-Type':'application/json'
         },
         data: JSON.stringify(availables)
-      }
+      };
       return $http(req).then(handleSuccess, handleError('Error creating lottery season'));
     }
 
     function getWinners(){
       return $http.get('http://localhost:8080/winners').then(function(response){
-        if(response.status != 200){
+        if(response.status !== 200){
           alert("something went wrong getting models");
         }else{
           return response.data;
@@ -85,7 +85,7 @@ angular.module('aPpApp')
           'Content-Type':'application/json'
         },
         data: JSON.stringify(winner)
-      }
+      };
       return $http(req).then(handleSuccess, handleError('Error creating lottery season'));
     }
 
