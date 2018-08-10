@@ -7,7 +7,7 @@
         <tr class = "info">
           <th>Name</th>
           <th>Model</th>
-          <th>Amount</th>
+          <th>stock</th>
           <th>Action</th>
         </tr>
       </thead>
@@ -15,9 +15,9 @@
         <tr ng-repeat = "product in pc.products | filter:pc.searchText">
           <td>{{ product.name }}</td>
           <td>{{ product.model }}</td>
-          <td>{{ product.amount }}</td>
+          <td>{{ product.stock }}</td>
           <td>
-            <a ng-click="pc.editProduct(product)" role = "button" class = "btn btn-info">edit</a>
+            <a ng-click="pc.openEditProductDialog(product)" role = "button" class = "btn btn-info">edit</a>
             <a ng-click="pc.deleteProduct(product.name, product.id)" role = "button" class = "btn btn-danger">delete</a>
           </td>
         </tr>
@@ -29,5 +29,5 @@
  </div>
 
  <hr>
- <button class="btn btn-primary" ng-click="pc.openDialog()">Add new Product</button>
+ <button class="btn btn-primary" ng-click="pc.openCreateProductDialog()">Add new Product</button>
  <br>

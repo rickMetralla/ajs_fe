@@ -10,20 +10,22 @@
 angular.module('aPpApp')
   .controller('dialogController', ['UtilService', '$uibModalInstance', 'params', function (UtilService, $uibModalInstance, params) {
     var dc = this;
-    dc.models = params;
+    dc.models = params.models;
     dc.product = {};
     dc.model = {};
     dc.product.name = '';
     dc.model.name = '';
-    dc.product.amount = '';
+    dc.product.stock = '';
 
-    initRegisterProductModal();
+    initRegisterProductModal(params.productToEdit);
 
     function initRegisterProductModal(productToUpdate){
+      console.log("inside modal");
+      console.log(productToUpdate);
       if (productToUpdate !== undefined){
         dc.product.name = productToUpdate.name;
         dc.model.name = productToUpdate.model;
-        dc.product.amount = productToUpdate.amount;
+        // dc.product.stock = productToUpdate.stock;
       }
     }
 
@@ -35,10 +37,10 @@ angular.module('aPpApp')
        var product = {
           name: dc.product.name,
           model: dc.model.name,
-          amount: dc.product.amount
+          stock: dc.product.stock
        };
        let message = UtilService.validateProductFields(product);
-       if(product.amount === '') product.amount = 0;
+       if(product.stock === '') product.stock = 0;
        if(message !== ""){
          alert(message);
          return;

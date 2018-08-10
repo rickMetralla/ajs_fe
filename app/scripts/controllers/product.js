@@ -10,7 +10,8 @@
 angular.module('aPpApp')
   .controller('ProductCtrl', ['UtilService', 'ProductService', '$uibModal', function (UtilService, ProductService, $uibModal) {
     var vm = this;
-    vm.openDialog = openDialog;
+    vm.openCreateProductDialog = openCreateProductDialog;
+    vm.openEditProductDialog = openEditProductDialog;
     vm.cleanFields = cleanFields;
     vm.saveProduct = saveProduct;
     vm.editProduct = editProduct;
@@ -48,7 +49,7 @@ angular.module('aPpApp')
 
     function cleanFields(){
       vm.product.name = '';
-      vm.product.amount = '';
+      vm.product.stock = '';
       loadAllModels();
     }
 
@@ -62,7 +63,7 @@ angular.module('aPpApp')
     function editProduct(prod) {
       // console.log(prod);
       vm.product.name = prod.name;
-      vm.product.amount = prod.amount;
+      vm.product.stock = prod.stock;
       vm.model.name = prod.model;
     }
 
@@ -77,16 +78,17 @@ angular.module('aPpApp')
       }
     }
 
-    function openDialog(){
-      // console.log(vm.models);
+    function openCreateProductDialog(){
       var modalInstance = $uibModal.open({
         templateUrl: "views/dialogModal.html",
         controller: "dialogController",
         controllerAs: 'dc',
         size: "md",
-        resolve: {     //data before open modal to populate on it
+        resolve: {
           params: function () {
-            return vm.models;
+            return {
+              models : vm.models
+            };
           }
         }
       });
@@ -94,7 +96,31 @@ angular.module('aPpApp')
       modalInstance.result.then(function (result){
         saveProduct(result);
       }, function () {
-        console.log("Dialog dismissed");
+        // console.log("Dialog dismissed");
+      });
+    }
+
+    function openEditProductDialog(product){
+      console.log(product);
+      var modalInstance = $uibModal.open({
+        templateUrl: "views/dialogModal.html",
+        controller: "dialogController",
+        controllerAs: 'dc',
+        size: "md",
+        resolve: {
+          params: function () {
+            return {
+              productToEdit : product,
+              models : vm.models
+            };
+          }
+        }
+      });
+
+      modalInstance.result.then(function (result){
+        saveProduct(result);
+      }, function () {
+        // console.log("Dialog dismissed");
       });
     }
 
