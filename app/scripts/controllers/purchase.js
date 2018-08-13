@@ -24,9 +24,14 @@ angular.module('aPpApp')
 
     cntrl.allPurchasers = [];
     cntrl.selectedPurchaser = [];
-    cntrl.products = []; // products to purchase by customer
+    cntrl.products = []; // products selected to purchase by customer
     cntrl.viewPurchase = viewPurchase;
     cntrl.loadAllPurchasers = loadAllPurchasers;
+
+    cntrl.selectedList = {};
+    cntrl.amountList = {};
+    cntrl.fixDate = fixDate;
+    cntrl.getProductName = getProductName;
 
     initController();
 
@@ -44,6 +49,8 @@ angular.module('aPpApp')
       loadAllPurchasers();
       cntrl.toPurchase = [];
       cntrl.products = [];
+      cntrl.selectedList = {};
+      cntrl.amountList = {};
     }
 
     function selectOne(dni) {
@@ -58,8 +65,7 @@ angular.module('aPpApp')
       });
     }
 
-    cntrl.selectedList = {};
-    cntrl.amountList = {};
+
     function ProductToBuy(item){
       let indexOfItem = cntrl.toPurchase.indexOf(item);
       if (indexOfItem === -1) {
@@ -78,17 +84,26 @@ angular.module('aPpApp')
 
         // creation of a transaction
         let prodOrderList = [];
-        console.log(cntrl.amountList);
+        // console.log(cntrl.amountList);
         for(let key in cntrl.amountList){
-          prodOrderList.push({
-            prodId : parseInt(key),
-            amount : cntrl.amountList[key]
-          });
+          if(cntrl.amountList[key] > 0){
+            prodOrderList.push({
+              prodId : parseInt(key),
+              amount : cntrl.amountList[key]
+            });
+          }else{
+            // console.log(key);
+            let productName = cntrl.getProductName(parseInt(key));
+            alert("Amount not valid for " + productName);
+            return;
+          }
         }
 
         if(prodOrderList.length === 0){
-          alert("Needs to select one product at least")
+          alert("Needs to select one product at least");
+          return;
         }
+        // console.log(prodOrderList);
 
         let transaction = {};
 
@@ -100,9 +115,20 @@ angular.module('aPpApp')
           purchasedAt : UtilService.fixDate(cntrl.purchaseDate)
         });
 
-        PurchaseService.createTransaction(transaction).then(function(){
+        PurchaseService.createTransaction(transaction).then(function(res){
+          // console.log(res);
           initController();
         });
+      }
+    }
+
+    function getProductName(prodId){
+      // console.log(prodId);
+      // console.log(cntrl.allProducts);
+      for (var i = 0; i < cntrl.allProducts.length; i++) {
+        if(cntrl.allProducts[i].id === prodId){
+          return cntrl.allProducts[i].name;
+        }
       }
     }
 
@@ -111,12 +137,13 @@ angular.module('aPpApp')
         // console.log(purchaser);
         // console.log(cntrl.allPurchasers);
         cntrl.selectedPurchaser = [purchaser];
-
+        // console.log(cntrl.allPurchasers);
         for (var i = 0; i < cntrl.allPurchasers.length; i++) {
           if (cntrl.allPurchasers[i].custDni === dni){
             cntrl.products = cntrl.allPurchasers[i].invoices;
           }
         }
+        // console.log(cntrl.products);
       });
     }
 
@@ -126,6 +153,11 @@ angular.module('aPpApp')
         cntrl.allPurchasers = purchasers;
         cntrl.selectedPurchaser = [];
       });
+    }
+
+    function fixDate(failDate){
+      let correctDate = failDate.split("@")[0];
+      return correctDate;
     }
 
   }]);
