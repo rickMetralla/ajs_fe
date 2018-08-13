@@ -8,33 +8,46 @@
  * Controller of the aPpApp
  */
 angular.module('aPpApp')
-  .controller('DrawCtrl', ['PurchaseService', 'UtilService', 'DrawService', 'UserService',
-  function (PurchaseService, UtilService, DrawService, UserService) {
+  .controller('DrawCtrl', ['PurchaseService', 'UtilService', 'DrawService', 'UserService', '$uibModal',
+  function (PurchaseService, UtilService, DrawService, UserService, $uibModal) {
 
     initController();
 
     var dr = this;
     dr.create = false;
-    dr.activeLottery = {};
-    dr.lotteryToPost = {};
+    dr.activePromotion = {};
+    dr.promotionToPost = {};
     dr.newLottery = {};
-    dr.lotteries = [];
-    dr.getActiveLottery = getActiveLottery;
-    dr.createSeasonLottery = createSeasonLottery;
-    dr.loadLotteries = loadLotteries;
+    dr.promotions = [];
+    dr.promoStatus = [];
+    dr.getActivePromotion = getActivePromotion;
+    dr.createPromotionSeason = createPromotionSeason;
+    dr.loadPromotions = loadPromotions;
     dr.cancel = cancel;
     dr.openCreateOption = openCreateOption;
     dr.drawPrizeLottery = drawPrizeLottery;
     dr.draw = false;
     dr.availableCustomers = [];
-    dr.makeDrawPrize = makeDrawPrize;
-    dr.winners = [];
-    dr.getWinners = [];
+    dr.executeDrawPrize = executeDrawPrize;
     dr.complete = complete;
+    dr.showDate = showDate;
+    dr.getPromoStatusName = getPromoStatusName;
+    dr.showDetails = showDetails;
+    dr.activePromotionById = activePromotionById;
+    dr.deletePromo = deletePromo;
+    dr.availablePrizes = [];
+    dr.availablePrizeDraws = [];
+    dr.availableWinners = [];
+    dr.getCustomerName = getCustomerName;
+    dr.customers = [];
+    dr.completed = false;
 
     function initController() {
-      loadLotteries();
-      getActiveLottery();
+      loadPromotions();
+      getActivePromotion();
+      UserService.GetAll().then(function(customers){
+        dr.customers = customers;
+      });
     }
 
     function openCreateOption(){
@@ -44,114 +57,200 @@ angular.module('aPpApp')
       dr.create = false;
     }
 
-    function createSeasonLottery(lot){
+    function createPromotionSeason(lot){
       if(lot === undefined){
         alert('Lottery form needs correct values.');
         return;
       }
       if(!(lot.end >= lot.start)){
         console.log(lot);
-        alert('Dates needs correction.');
+        alert('End date is before than start date.');
         return;
       }
-      dr.lotteryToPost.season = lot.season;
-      dr.lotteryToPost.description = lot.description;
-      dr.lotteryToPost.startAt = UtilService.fixDate(lot.start);
-      dr.lotteryToPost.endAt = UtilService.fixDate(lot.end);
-      dr.lotteryToPost.active = false;
-      DrawService.createSeasonLottery(dr.lotteryToPost).then(function(response){
+      dr.promotionToPost.season = lot.season;
+      dr.promotionToPost.description = lot.description;
+      dr.promotionToPost.startAt = UtilService.fixDate(lot.start);
+      dr.promotionToPost.endAt = UtilService.fixDate(lot.end);
+      dr.promotionToPost.active = false;
+      // console.log(dr.promotionToPost);
+      DrawService.createPromotionSeason(dr.promotionToPost).then(function(response){
         dr.create = false;
-        loadLotteries();
+        loadPromotions();
       });
     }
 
-    function loadLotteries(){
-      DrawService.getSeasons().then(function(lotteries){
-        dr.lotteries = lotteries;
+    function loadPromotions(){
+      DrawService.getSeasons().then(function(promotions){
+        dr.promotions = promotions;
+      });
+      DrawService.getPromoStatus().then(function(promoStatus){
+        dr.promoStatus = promoStatus;
       });
     }
 
-    function getActiveLottery(){
-      DrawService.getActiveSeason().then(function(activeLot){
-        // console.log(activeLot);
-        dr.activeLottery = activeLot;
-      });
-    }
-
-    function drawPrizeLottery(lottery){
-      dr.draw = true;
-      loadAvailableCustomers(lottery);
-      // loadWinners();
-    }
-
-    function loadAvailableCustomers(lottery){
-      PurchaseService.GetAllPurchaser().then(function(purchasers){
-        // dr.availableCustomers = purchasers;
-        for (var i = 0; i < purchasers.length; i++) {
-          if(validateCustomer(purchasers[i], lottery)){
-            dr.availableCustomers.push(purchasers[i]);
-            // console.log("add avail");
-            // console.log(purchasers[i]);
+    function getActivePromotion(){
+      DrawService.getSeasons().then(function(seasons){
+        for (var i = 0; i < seasons.length; i++) {
+          if(seasons[i].status === 1){
+            dr.activePromotion = seasons[i];
+            getAvailableCustomers(dr.activePromotion.id);
+            getPrizesByPromoId(dr.activePromotion.id);
+            getPrizesDrawsByPromoId(dr.activePromotion.id);
+            getWinnersByPromoId(dr.activePromotion.id);
+            return;
           }
         }
       });
     }
 
-    function validateCustomer(customer, lottery){
-      let startDate = UtilService.convertToDate(lottery.startAt);
-      let endDate = UtilService.convertToDate(lottery.endAt);
-      for (var i = 0; i < customer.customerOrders.length; i++) {
-        let current = UtilService.convertToDate(customer.customerOrders[i].purchasedAt);
-        if(current > startDate && current < endDate){
-          // for (var i = 0; i < dr.getWinners.length; i++) {
-          //   if(customer.custDni !== dr.getWinners[i].custDni){
-          //     return true;
-          //   }
-          // }
-          return true;
-        }
-      }
-      return false;
+    function getAvailableCustomers(promoId){
+      DrawService.getAvailablesCustomersAfterActivate(promoId)
+        .then(function(customers){
+          dr.availableCustomers = customers;
+      });
     }
-
-    // function loadWinners(){
-    //   DrawService.getWinners().then(function(response){
-    //     dr.getWinners = response;
-    //   });
-    // }
-
-    function makeDrawPrize(customers){
-      // console.log(customers);
-      DrawService.makeDrawPrizeProcess(customers).then(function(winner){
-        dr.winners.push(winner);
-        // console.log("make draw");
-        // console.log(dr.winners);
-        saveWinner(winner);
+    function getPrizesByPromoId(promoId){
+      DrawService.getPrizeByPromoId(promoId)
+        .then(function(prizes){
+          dr.availablePrizes = prizes;
+          console.log(dr.availablePrizes);
+      });
+    }
+    function getPrizesDrawsByPromoId(promoId){
+      DrawService.getPrizeDrawByPromoId(promoId).then(function(prizeDraws){
+        dr.availablePrizeDraws = prizeDraws;
+      });
+    }
+    function getWinnersByPromoId(promoId){
+      DrawService.getAllWinnersByPromoId(promoId, true)
+        .then(function(winners){
+          dr.availableWinners = winners;
       });
     }
 
-    function saveWinner(winner){
-      let win = {};
-      win.custDni = winner.dni;
-      win.lotteryId = dr.activeLottery.id;
-
-      for (var i = 0; i < dr.availableCustomers.length; i++) {
-        if(dr.availableCustomers[i].custDni === win.custDni){
-          dr.availableCustomers.splice(i, 1);
+    function getPrizeNameById(id){
+      for (var i = 0; i < pdc.availablePrizes.length; i++) {
+        if(pdc.availablePrizes[i].id === id){
+          return pdc.availablePrizes[i].name;
         }
       }
+    }
 
-      // DrawService.setWinner(win).then(function(response){
-      //   for (var i = 0; i < dr.availableCustomers.length; i++) {
-      //     if(dr.availableCustomers[i].custDni === win.custDni){
-      //       dr.availableCustomers.splice(i, 1);
-      //     }
-      //   }
-      // });
+    function getCustomerName(dni){
+      for (var i = 0; i < dr.customers.length; i++) {
+        if(dr.customers[i].dni === dni){
+          return dr.customers[i].name;
+        }
+      }
+    }
+
+    function activePromotionById(promo){
+      if(dr.activePromotion.season){
+        alert("Currently there is active promotion running.");
+        return;
+      }
+
+      var modalInstance = $uibModal.open({
+        templateUrl: "views/activatepromo.html",
+        controller: "ActivatepromoCtrl",
+        controllerAs: 'apc',
+        size: "md",
+        resolve: {
+          params: function () {
+            return {
+              promo : promo
+            };
+          }
+        }
+      });
+
+      modalInstance.result.then(function (result){
+        // console.log(result);
+        dr.activePromotion = result;
+        loadPromotions();
+      }, function () {
+        // console.log("Dialog dismissed");
+      });
+
+    }
+
+    function drawPrizeLottery(){
+      dr.draw = true;
+    }
+
+    function executeDrawPrize(){
+      DrawService.makeDrawPrizeProcess(dr.activePromotion.id).then(function(res){
+        console.log(res);
+        getActivePromotion();
+        dr.completed = true;
+      });
+    }
+
+    function showDetails(promoId){
+      DrawService.getPrizeDrawByPromoId(promoId).then(function(prizeDraws){
+        openDetailPromoDialog(prizeDraws);
+      });
     }
 
     function complete(){
-      dr.draw = false;
+      DrawService.completePromo(dr.activePromotion.id).then(function(){
+        dr.draw = false;
+        dr.completed = false;
+        loadPromotions();
+      });
+    }
+
+    function showDate(oldDate){
+      return oldDate.split("@")[0];
+    }
+
+    function getPromoStatusName(promoStatusId){
+      for (var i = 0; i < dr.promoStatus.length; i++) {
+        if(dr.promoStatus[i].id === promoStatusId){
+          return dr.promoStatus[i].status;
+        }
+      }
+    }
+
+    function openDetailPromoDialog(prizeDraws){
+      var modalInstance = $uibModal.open({
+        templateUrl: "views/showdetailpromo.html",
+        controller: "PromodetailCtrl",
+        controllerAs: 'pdc',
+        size: "md",
+        resolve: {
+          params: function () {
+            return {
+              prizes : prizeDraws
+            };
+          }
+        }
+      });
+
+      modalInstance.result.then(function (result){
+        console.log(result);
+      }, function () {
+        // console.log("Dialog dismissed");
+      });
+    }
+
+    function deletePromo(promoId){
+      // console.log(promoId);
+      if(confirm("Are you sure to remove?")){
+        DrawService.deletePromoById(promoId).then(function(res){
+          if(res.success === false){
+            alert("Something went wrong deleting promo with id: " + promoId)
+          } else {
+            for (var i = 0; i < dr.promotions.length; i++) {
+              if(dr.promotions[i].id === promoId){
+                dr.promotions.splice(i, 1);
+              }
+            }
+          }
+        })
+      } else {
+        console.log("not removed: " + promoId);
+      }
     }
 
   }]);

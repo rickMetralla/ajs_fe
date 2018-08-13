@@ -11,28 +11,58 @@ angular.module('aPpApp')
   .factory('DrawService', ['$http', function ($http) {
     var service = {};
 
-    service.createSeasonLottery = createSeasonLottery;
+    service.createPromotionSeason = createPromotionSeason;
+    service.updatePromotionSeason = updatePromotionSeason;
+    service.deletePromoById = deletePromoById;
     service.getSeasons = getSeasons;
     service.getSeason = getSeason;
-    service.getActiveSeason = getActiveSeason;
+    service.activatePromo = activatePromo;
+    service.inactivatePromo = inactivatePromo;
+    service.completePromo = completePromo;
+    service.getAvailablesCustomersBeforeActivate = getAvailablesCustomersBeforeActivate;
+    service.getAvailablesCustomersAfterActivate = getAvailablesCustomersAfterActivate;
     service.makeDrawPrizeProcess = makeDrawPrizeProcess;
-    service.getWinners = getWinners;
-    service.setWinner = setWinner;
+    service.getPromoStatus = getPromoStatus;
+    service.getPromoStatusById = getPromoStatusById;
+    service.getPrizeDrawByPromoId = getPrizeDrawByPromoId;
+    service.getPrizeByPromoId = getPrizeByPromoId;
+    service.getAllPrize = getAllPrize;
+    service.getRankPrizes = getRankPrizes;
+    service.registerPrize = registerPrize;
+    service.getAllWinnersByPromoId = getAllWinnersByPromoId;
 
-    function createSeasonLottery(lot){
+    function createPromotionSeason(promo){
       var req = {
         method: 'POST',
-        url: 'http://localhost:8080/lot',
+        url: 'http://localhost:8080/promos',
         headers: {
           'Content-Type':'application/json'
         },
-        data: JSON.stringify(lot)
+        data: JSON.stringify(promo)
       };
-      return $http(req).then(handleSuccess, handleError('Error creating lottery season'));
+      return $http(req).then(handleSuccess, handleError('Error creating promotion season'));
+    }
+
+    function updatePromotionSeason(promoToUpdate){
+      var req = {
+        method: 'PUT',
+        url: 'http://localhost:8080/promos',
+        headers: {
+          'Content-Type':'application/json'
+        },
+        data: JSON.stringify(promoToUpdate)
+      };
+      return $http(req).then(handleSuccess, handleError('Error updating promotion season'));
+    }
+
+    function deletePromoById(id){
+      return $http.delete('http://localhost:8080/promos/' + id).then(function(result){
+        return result.status;
+      }, handleError('Error deleting promotion season by id: ' + id));
     }
 
     function getSeasons(){
-      return $http.get('http://localhost:8080/lots').then(function(response){
+      return $http.get('http://localhost:8080/promos').then(function(response){
         if(response.status !== 200){
           alert("something went wrong getting models");
         }else{
@@ -42,7 +72,7 @@ angular.module('aPpApp')
     }
 
     function getSeason(id){
-      return $http.get('http://localhost:8080/lot/' + id).then(function(response){
+      return $http.get('http://localhost:8080/promos/' + id).then(function(response){
         if(response.status !== 200){
           alert("something went wrong getting models");
         }else{
@@ -51,42 +81,81 @@ angular.module('aPpApp')
       });
     }
 
-    function getActiveSeason(){
-      return $http.get('http://localhost:8080/activeLot').then(handleSuccess, handleError("error"));
+    function activatePromo(id){
+      return $http.put('http://localhost:8080/promos/'+ id +'/activate')
+        .then(handleSuccess, handleError("error while activating a promotion"));
     }
 
-    function makeDrawPrizeProcess(availables){
+    function inactivatePromo(id){
+      return $http.put('http://localhost:8080/promos/'+ id +'/inactive')
+        .then(handleSuccess, handleError("error while inactivating a promotion"));
+    }
+
+    function completePromo(id){
+      return $http.put('http://localhost:8080/promos/'+ id +'/complete')
+        .then(handleSuccess, handleError("error while completing a promotion"));
+    }
+
+    function getAvailablesCustomersBeforeActivate(idPromo){
+      return $http.get('http://localhost:8080/promos/'+ idPromo + '/customers')
+        .then(handleSuccess, handleError("error while getting availables customer before active promo"));
+    }
+
+    function getAvailablesCustomersAfterActivate(idPromo){
+      return $http.get('http://localhost:8080/promos/'+ idPromo + '/active/customers')
+        .then(handleSuccess, handleError("error while getting availables customer after active promo"));
+    }
+
+    function makeDrawPrizeProcess(idPromo){
+      return $http.post('http://localhost:8080/promos/' + idPromo + '/drawprizes')
+        .then(handleSuccess, handleError('Error doing draw of prizes'));
+    }
+
+    function getPromoStatusById(idPromo){
+      return $http.get('http://localhost:8080/promoStatus/'+ idPromo)
+        .then(handleSuccess, handleError("error while getting promo status by promo id"));
+    }
+
+    function getPromoStatus(idPromo){
+      return $http.get('http://localhost:8080/promoStatus/')
+        .then(handleSuccess, handleError("error while getting promo status"));
+    }
+
+    function getPrizeDrawByPromoId(promoId){
+      return $http.get('http://localhost:8080/promos/' + promoId + '/prizedraws')
+        .then(handleSuccess, handleError("error while getting the prizeDraws"));
+    }
+
+    function getPrizeByPromoId(promoId){
+      return $http.get('http://localhost:8080/prizes/' + promoId)
+        .then(handleSuccess, handleError("error while getting prizes by promo id"));
+    }
+
+    function getAllPrize(){
+      return $http.get('http://localhost:8080/prizes')
+        .then(handleSuccess, handleError("error while getting all prizes"));
+    }
+
+    function getRankPrizes(){
+      return $http.get('http://localhost:8080/prizes/ranks')
+        .then(handleSuccess, handleError("error while getting all rank prizes"));
+    }
+
+    function registerPrize(prize){
       var req = {
         method: 'POST',
-        url: 'http://localhost:8080/drawPrize',
+        url: 'http://localhost:8080/prizes',
         headers: {
           'Content-Type':'application/json'
         },
-        data: JSON.stringify(availables)
+        data: JSON.stringify(prize)
       };
-      return $http(req).then(handleSuccess, handleError('Error creating lottery season'));
+      return $http(req).then(handleSuccess, handleError('Error creating prize'));
     }
 
-    function getWinners(){
-      return $http.get('http://localhost:8080/winners').then(function(response){
-        if(response.status !== 200){
-          alert("something went wrong getting models");
-        }else{
-          return response.data;
-        }
-      });
-    }
-
-    function setWinner(winner){
-      var req = {
-        method: 'POST',
-        url: 'http://localhost:8080/winner',
-        headers: {
-          'Content-Type':'application/json'
-        },
-        data: JSON.stringify(winner)
-      };
-      return $http(req).then(handleSuccess, handleError('Error creating lottery season'));
+    function getAllWinnersByPromoId(promoId, winner){
+      return $http.get('http://localhost:8080/promos/' + promoId + '/prizedraws/' + winner)
+        .then(handleSuccess, handleError("error while getting all winners by promo id"));
     }
 
     function handleSuccess(res) {

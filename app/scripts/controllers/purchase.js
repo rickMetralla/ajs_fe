@@ -16,11 +16,18 @@ angular.module('aPpApp')
     cntrl.selectOne = selectOne;
     cntrl.loadAllUsers = loadAllUsers;
 
-    cntrl.allProducts = [];
+    cntrl.allProducts = []; // products to show
     cntrl.toPurchase = [];
     cntrl.getAllProducts = getAllProducts;
     cntrl.CommitPurchase = CommitPurchase;
     cntrl.ProductToBuy = ProductToBuy;
+
+    cntrl.allPurchasers = [];
+    cntrl.selectedPurchaser = [];
+    cntrl.products = []; // products to purchase by customer
+    cntrl.viewPurchase = viewPurchase;
+    cntrl.loadAllPurchasers = loadAllPurchasers;
+
     initController();
 
     function initController() {
@@ -32,6 +39,7 @@ angular.module('aPpApp')
     function loadAllUsers() {
       UserService.GetAll().then(function (customers) {
         cntrl.allUsers = customers;
+        // console.log(customers);
       });
       loadAllPurchasers();
       cntrl.toPurchase = [];
@@ -98,22 +106,15 @@ angular.module('aPpApp')
       }
     }
 
-
-
-    cntrl.allPurchasers = [];
-    cntrl.selectedPurchaser = [];
-    cntrl.products = [];
-    cntrl.viewPurchase = viewPurchase;
-    cntrl.loadAllPurchasers = loadAllPurchasers;
-
     function viewPurchase(dni){
       UserService.GetByDni(dni).then(function(purchaser) {
         // console.log(purchaser);
+        // console.log(cntrl.allPurchasers);
         cntrl.selectedPurchaser = [purchaser];
 
         for (var i = 0; i < cntrl.allPurchasers.length; i++) {
           if (cntrl.allPurchasers[i].custDni === dni){
-            cntrl.products = cntrl.allPurchasers[i].customerOrders;
+            cntrl.products = cntrl.allPurchasers[i].invoices;
           }
         }
       });
@@ -121,6 +122,7 @@ angular.module('aPpApp')
 
     function loadAllPurchasers() {
       PurchaseService.GetAllPurchaser().then(function(purchasers){
+        // console.log(purchasers);
         cntrl.allPurchasers = purchasers;
         cntrl.selectedPurchaser = [];
       });

@@ -25,9 +25,11 @@
     </table>
   </div>
   <div ng-hide="pc.products.length > 0">No Products Found</div>
-  </div>
- </div>
+</div>
 
  <hr>
- <button class="btn btn-primary" ng-click="pc.openCreateProductDialog()">Add new Product</button>
- <br>
+ <div >
+   <button class="btn btn-primary" ng-click="pc.openCreateProductDialog()">Add new Product</button>
+   <button class="btn btn-primary" ng-click="pc.productModals()">Product Model settings</button>
+ </div>
+ <br/>

@@ -13,24 +13,50 @@ angular.module('aPpApp')
     var service = {};
 
     service.GetAll = GetAll;
-    service.GetAllModels = GetAllModels;
     service.GetById = GetById;
     service.Create = Create;
     service.Update = Update;
     service.Delete = Delete;
 
+    service.GetAllModels = GetAllModels;
+    service.UpdateModel = UpdateModel;
+    service.DeleteModel = DeleteModel;
+    service.CreateNewModel = CreateNewModel;
+
     return service;
 
     function GetAllModels() {
-      // return $http.get('http://localhost:8080/pmodels').then(handleSuccess, handleError('Error getting product by id'));
-      return $http.get('http://localhost:8080/pmodels').then(function(response){
-        if(response.status !== 200){
-          alert("something went wrong getting models");
-        }else{
-          return response.data;
-        }
+      return $http.get('http://localhost:8080/pmodels').then(handleSuccess, handleError('Error getting models'));
+    }
 
-      });
+    function UpdateModel(pmodel){
+      var req = {
+        method: 'PUT',
+        url: 'http://localhost:8080/pmodels/',
+        headers: {
+          'Content-Type':'application/json'
+        },
+        data: JSON.stringify(pmodel)
+      };
+      return $http(req).then(handleSuccess, handleError('Error updating product model'));
+    }
+
+    function DeleteModel(nameModel){
+      return $http.delete('http://localhost:8080/pmodels/' + nameModel).then(function(result){
+        return result.status;
+      }, handleError('Error deleting product'));
+    }
+
+    function CreateNewModel(model){
+      var req = {
+        method: 'POST',
+        url: 'http://localhost:8080/pmodels/',
+        headers: {
+          'Content-Type':'application/json'
+        },
+        data: JSON.stringify(model)
+      };
+      return $http(req).then(handleSuccess, handleError('Error creating product model'));
     }
 
     function GetAll() {
@@ -45,13 +71,13 @@ angular.module('aPpApp')
     }
 
     function GetById(id) {
-      return $http.get('http://localhost:8080/product/' + id).then(handleSuccess, handleError('Error getting product by id'));
+      return $http.get('http://localhost:8080/products/' + id).then(handleSuccess, handleError('Error getting product by id'));
     }
 
     function Create(product) {
       var req = {
         method: 'POST',
-        url: 'http://localhost:8080/product/',
+        url: 'http://localhost:8080/products/',
         headers: {
           'Content-Type':'application/json'
         },
@@ -64,7 +90,7 @@ angular.module('aPpApp')
     function Update(product) {
       var req = {
         method: 'PUT',
-        url: 'http://localhost:8080/product/',
+        url: 'http://localhost:8080/products/',
         headers: {
           'Content-Type':'application/json'
         },
@@ -74,7 +100,7 @@ angular.module('aPpApp')
     }
 
     function Delete(id) {
-        return $http.delete('http://localhost:8080/product/' + id).then(handleSuccess, handleError('Error deleting product'));
+        return $http.delete('http://localhost:8080/products/' + id).then(handleSuccess, handleError('Error deleting product'));
     }
 
     // private functions

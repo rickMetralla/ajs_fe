@@ -1,0 +1,61 @@
+<div class="modal-header">
+   <h4 class="modal-title">Models for product:</h4>
+</div>
+
+<div class="modal-body">
+
+  <div class="scroll-table" ng-show="mc.models.length > 0" ng-if="!mc.newModalFlag">
+    <table ng-if="mc.models.length" class = "table table-striped table-bordered table-hover">
+      <thead>
+        <tr class = "info">
+          <th>Name</th>
+          <th>Description</th>
+          <th>Chance</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat = "model in mc.models">
+          <td>{{ model.name }}</td>
+          <td>{{ model.description }}</td>
+          <td>{{ model.chance }}</td>
+          <td>
+            <a ng-click="mc.editModel(model)" role = "button" class = "btn btn-info">Edit</a>
+            <a ng-click="mc.deleteModel(model.name)" role = "button" class = "btn btn-danger">Delete</a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div ng-show="mc.models.length === 0" ng-if="!mc.newModalFlag">
+    There is not product models registered.
+  </div>
+
+  <div ng-if="mc.newModalFlag">
+    <form name="form" role = "form" class="well" ng-submit="mc.saveModel(mc.model)">
+      <div class = "form-group">
+        <label for = "name"> Name:  </label>
+        <input type = "text" id="name" pattern="[a-zA-Z ]+" minlength="1" maxlength="10" class="form-control" title="Only alphabetic characters" ng-model = "mc.model.name" ng-disabled="mc.editModalFlag" >
+      </div>
+      <div class = "form-group">
+        <label for = "model"> Description:  </label>
+        <input type = "text" id="name" pattern="[a-zA-Z0-9 ]+" minlength="3" maxlength="254" class="form-control" title="Only alphanumeric characters" ng-model = "mc.model.description">
+      </div>
+        <div class = "form-group">
+        <label for = "stock"> Chance:  </label>
+      <input type = "text" id="stock" pattern="[0-9]+" maxlength="9" class="form-control" title="Only numeric characters" ng-model="mc.model.chance">
+      </div>
+      <div class="form-actions modal-footer">
+        <button type="button" class="btn btn-primary" class="btn btn-primary" ng-show="mc.editModalFlag" ng-click="mc.updateModel(mc.model)">Update Model</button>
+        <button type="submit" class="btn btn-primary" ng-show="mc.newModalFlag && !mc.editModalFlag">Save Model</button>
+        <button type="button" class="btn btn-default" ng-click="mc.closeSaveModel()" ng-show="mc.newModalFlag">Cancel</button>
+      </div>
+    </form>
+  </div>
+
+</div>
+
+<div class="modal-footer" ng-show="!mc.newModalFlag">
+  <button type="button" class="btn btn-primary" ng-click="mc.addNewModel()">Add new Model</button>
+  <button type="button" class="btn btn-default" ng-click="mc.cancel()">Close</button>
+</div>

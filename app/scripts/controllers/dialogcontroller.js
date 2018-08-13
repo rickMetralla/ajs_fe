@@ -20,12 +20,13 @@ angular.module('aPpApp')
     initRegisterProductModal(params.productToEdit);
 
     function initRegisterProductModal(productToUpdate){
-      console.log("inside modal");
-      console.log(productToUpdate);
+      // console.log("inside modal");
+      // console.log(productToUpdate);
       if (productToUpdate !== undefined){
+        dc.product.id = productToUpdate.id;
         dc.product.name = productToUpdate.name;
         dc.model.name = productToUpdate.model;
-        // dc.product.stock = productToUpdate.stock;
+        dc.product.stock = productToUpdate.stock;
       }
     }
 
@@ -40,6 +41,7 @@ angular.module('aPpApp')
           stock: dc.product.stock
        };
        let message = UtilService.validateProductFields(product);
+       if(params.productToEdit !== undefined) product.id = params.productToEdit.id;
        if(product.stock === '') product.stock = 0;
        if(message !== ""){
          alert(message);

@@ -34,7 +34,6 @@ angular.module('aPpApp')
         },
         data: JSON.stringify(transaction)
       };
-      // console.log(req.data);
       return $http(req).then(handleSuccess, handleError('Error creating purchase transaction'));
     }
 

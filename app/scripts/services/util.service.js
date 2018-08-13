@@ -36,7 +36,7 @@ angular.module('aPpApp')
     function fixDate(failDate){
       failDate.setHours(failDate.getHours() - failDate.getTimezoneOffset() / 60);
       let fixNewDate = failDate.toISOString();
-      fixNewDate = fixNewDate.replace("T", "@").replace("Z","");
+      fixNewDate = fixNewDate.replace("T", "@").replace("Z","-0004");
       return fixNewDate;
     }
 

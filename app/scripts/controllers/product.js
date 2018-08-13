@@ -16,6 +16,9 @@ angular.module('aPpApp')
     vm.saveProduct = saveProduct;
     vm.editProduct = editProduct;
     vm.deleteProduct = deleteProduct;
+
+    vm.productModals = productModals;
+
     vm.models = [];
     vm.products = [];
     vm.product = {};
@@ -38,13 +41,22 @@ angular.module('aPpApp')
         alert("not valid product");
         return;
       }
+      // console.log(product);
+      // console.log('creating product');
+      ProductService.Create(product)
+        .then(function(response){
+          loadAllProducts()
+          cleanFields();
+      });
+    }
+
+    function updateProduct(product){
       console.log(product);
-      console.log('creating product');
-      // ProductService.Create(product)
-      //   .then(function(response){
-      //   loadAllProducts()
-      //   cleanFields();
-      // });
+      ProductService.Update(product)
+        .then(function(response){
+          loadAllProducts()
+          cleanFields();
+      });
     }
 
     function cleanFields(){
@@ -101,7 +113,7 @@ angular.module('aPpApp')
     }
 
     function openEditProductDialog(product){
-      console.log(product);
+      // console.log(product);
       var modalInstance = $uibModal.open({
         templateUrl: "views/dialogModal.html",
         controller: "dialogController",
@@ -118,11 +130,32 @@ angular.module('aPpApp')
       });
 
       modalInstance.result.then(function (result){
-        saveProduct(result);
+        updateProduct(result);
       }, function () {
         // console.log("Dialog dismissed");
       });
     }
 
+    function productModals(){
+      var modalInstance = $uibModal.open({
+        templateUrl: "views/modelsDialog.html",
+        controller: "modelCtrl",
+        controllerAs: 'mc',
+        size: "md",
+        resolve: {
+          params: function () {
+            return {
+              models : vm.models
+            };
+          }
+        }
+      });
+
+      modalInstance.result.then(function (result){
+        console.log(result);
+      }, function () {
+        console.log("Product model dialog dismissed");
+      });
+    }
 
   }]);

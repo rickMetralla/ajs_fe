@@ -1,6 +1,106 @@
-<h3>Lottery</h3>
-<a ng-if="!dc.create" ng-click="dc.openCreateOption()" role = "button" class = "btn btn-info">Create Lottery Season</a>
+<h3>Promotions:</h3>
+<h4>Active Promotion:</h4>
+<table ng-if="dc.activePromotion.season" class = "table table-striped table-bordered table-hover">
+  <thead>
+    <tr class = "info">
+      <th>Season name</th>
+      <th># Available customers</th>
+      <th># Prizes</th>
+      <th>Winners</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>{{ dc.activePromotion.season }}</td>
+      <td>'{{ dc.availableCustomers.length }}' availables customers</td>
+      <td>'{{ dc.availablePrizes.length }}' prizes</td>
+      <td>'{{ dc.availableWinners.length }}' winners</td>
+      <td>
+        <a class="btn btn-info" ng-click="dc.drawPrizeLottery()">Make draw Prize</a>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<div ng-if="!dc.activePromotion.season">
+  There is no Active Promotion right now.
+</div>
 
+<hr>
+<div ng-show="!dc.draw">
+<h4>All Promotions:</h4>
+<table ng-if="dc.promotions.length" class = "table table-striped table-bordered table-hover">
+  <thead>
+    <tr class = "info">
+      <th>Season name</th>
+      <th>Description</th>
+      <th>Start date</th>
+      <th>End date</th>
+      <th>Status</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr ng-repeat="promo in dc.promotions">
+      <td>{{ promo.season }}</td>
+      <td>{{ promo.description }}</td>
+      <td>{{ dc.showDate(promo.startAt) }}</td>
+      <td>{{ dc.showDate(promo.endAt) }}</td>
+      <td>{{ dc.getPromoStatusName(promo.status) }}</td>
+      <td>
+        <a class="btn btn-info" ng-if="promo.status == 3" ng-click="dc.showDetails(promo.id)">Show details</a>
+        <a class="btn btn-info" ng-if="promo.status == 2" ng-click="dc.activePromotionById(promo)">Active</a>
+        <a class="btn btn-danger" ng-if="promo.status == 2" ng-click="dc.deletePromo(promo.id)">X</a>
+      </td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<div ng-show="dc.draw">
+  <table ng-if="dc.availablePrizeDraws.length" class = "table table-striped table-bordered table-hover">
+    <thead>
+      <tr class = "info">
+        <th>Name</th>
+        <th>Dni</th>
+        <th>Chances to win</th>
+        <th>Winner?</th>
+        <th>Won article</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="prizeDraw in dc.availablePrizeDraws">
+        <td>{{ dc.getCustomerName(prizeDraw.custDni) }}</td>
+        <td>{{ prizeDraw.custDni }}</td>
+        <td>{{ prizeDraw.chances }}</td>
+        <td>{{ prizeDraw.winner }}</td>
+        <td>{{ dc.getPrizeNameById(prizeDraw.wonArticle) }}</td>
+      </tr>
+    </tbody>
+  </table>
+  <a ng-if="dc.availablePrizeDraws.length && !dc.completed" ng-click="dc.executeDrawPrize()" role = "button" class = "btn btn-info">Draw Prize</a>
+  <a ng-if="dc.completed" ng-click="dc.complete()" role = "button" class = "btn btn-info">Complete!</a>
+  <!-- <table ng-if="dc.winners.length" class = "table table-striped table-bordered table-hover">
+    <thead>
+      <tr class = "info">
+        <th>Winner Customers</th>
+        <th>Dni</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="customers in dc.winners">
+        <td>{{ customers.name }}</td>
+        <td>{{ customers.dni }}</td>
+      </tr>
+    </tbody>
+  </table> -->
+
+</div>
+
+<hr />
+<div>
+  <a ng-if="!dc.create && !dc.draw" ng-click="dc.openCreateOption()" role = "button" class = "btn btn-info">Create new Promotion</a>
+</div>
 <div ng-if="dc.create">
   <h4> Create a season Lottery: </h4>
   <form role = "form" class="well" ng-hide="ifSearchUser">
@@ -21,92 +121,8 @@
       <input type = "date" id = "date" class = "form-control" ng-model = "dc.lot.end" required>
     </div>
 
-    <input type="button" class="btn btn-primary" ng-click="dc.createSeasonLottery(dc.lot)" class="btn btn-primary" value = "Save">
-    <input type="button" class="btn btn-primary" ng-click="dc.cancel()" class="btn btn-primary" value = "Cancel">
+    <input type="button" class="btn btn-primary" ng-click="dc.createPromotionSeason(dc.lot)" value = "Save">
+    <input type="button" class="btn btn-primary" ng-click="dc.cancel()" value = "Cancel">
   </form>
 </div>
-
-<hr>
-<h4>Active Lottery:</h4>
-<table ng-if="dc.activeLottery.season" class = "table table-striped table-bordered table-hover">
-  <thead>
-    <tr class = "info">
-      <th>Lottery season name</th>
-      <th>Description</th>
-      <th>Start date</th>
-      <th>End date</th>
-      <th>Action</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>{{ dc.activeLottery.season }}</td>
-      <td>{{ dc.activeLottery.description }}</td>
-      <td>{{ dc.activeLottery.startAt }}</td>
-      <td>{{ dc.activeLottery.endAt }}</td>
-      <td>
-        <a ng-click="dc.drawPrizeLottery(dc.activeLottery)">Make draw Prize</a>
-      </td>
-    </tr>
-  </tbody>
-</table>
-
-<hr>
-<div ng-show="!dc.draw">
-<h4>Lotteries:</h4>
-<table ng-if="dc.lotteries.length" class = "table table-striped table-bordered table-hover">
-  <thead>
-    <tr class = "info">
-      <th>Lottery season name</th>
-      <th>Description</th>
-      <th>Start date</th>
-      <th>End date</th>
-      <th>Active</th>
-      <th>Action</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr ng-repeat="lottery in dc.lotteries">
-      <td>{{ lottery.season }}</td>
-      <td>{{ lottery.description }}</td>
-      <td>{{ lottery.startAt }}</td>
-      <td>{{ lottery.endAt }}</td>
-      <td>{{ lottery.active }}</td>
-      <td>
-        <a ng-click="dc.winnersLottery(lottery.id)">Show winners</a>
-      </td>
-    </tr>
-  </tbody>
-</table>
-</div>
-<div ng-show="dc.draw">
-  <table ng-if="dc.availableCustomers.length" class = "table table-striped table-bordered table-hover">
-    <thead>
-      <tr class = "info">
-        <th>Available Customers</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr ng-repeat="customers in dc.availableCustomers">
-        <td>{{ customers.custDni }}</td>
-      </tr>
-    </tbody>
-  </table>
-  <a ng-if="dc.availableCustomers.length" ng-click="dc.makeDrawPrize(dc.availableCustomers)" role = "button" class = "btn btn-info">Draw Prize</a>
-  <a ng-if="dc.winners.length" ng-click="dc.complete()" role = "button" class = "btn btn-info">Complete</a>
-  <table ng-if="dc.winners.length" class = "table table-striped table-bordered table-hover">
-    <thead>
-      <tr class = "info">
-        <th>Winner Customers</th>
-        <th>Dni</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr ng-repeat="customers in dc.winners">
-        <td>{{ customers.name }}</td>
-        <td>{{ customers.dni }}</td>
-      </tr>
-    </tbody>
-  </table>
-
-</div>
+<br />
