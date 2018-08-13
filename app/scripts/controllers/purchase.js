@@ -116,8 +116,12 @@ angular.module('aPpApp')
         });
 
         PurchaseService.createTransaction(transaction).then(function(res){
-          // console.log(res);
-          initController();
+          if(res.success === false){
+            alert(res.message);
+            return;
+          }else{
+            initController();
+          }
         });
       }
     }

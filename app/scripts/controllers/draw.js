@@ -41,6 +41,7 @@ angular.module('aPpApp')
     dr.getCustomerName = getCustomerName;
     dr.customers = [];
     dr.completed = false;
+    dr.getPrizeNameById = getPrizeNameById;
 
     function initController() {
       loadPromotions();
@@ -59,11 +60,11 @@ angular.module('aPpApp')
 
     function createPromotionSeason(lot){
       if(lot === undefined){
-        alert('Lottery form needs correct values.');
+        alert('Promotion form needs correct values.');
         return;
       }
       if(!(lot.end >= lot.start)){
-        console.log(lot);
+        // console.log(lot);
         alert('End date is before than start date.');
         return;
       }
@@ -113,7 +114,6 @@ angular.module('aPpApp')
       DrawService.getPrizeByPromoId(promoId)
         .then(function(prizes){
           dr.availablePrizes = prizes;
-          console.log(dr.availablePrizes);
       });
     }
     function getPrizesDrawsByPromoId(promoId){
@@ -129,9 +129,9 @@ angular.module('aPpApp')
     }
 
     function getPrizeNameById(id){
-      for (var i = 0; i < pdc.availablePrizes.length; i++) {
-        if(pdc.availablePrizes[i].id === id){
-          return pdc.availablePrizes[i].name;
+      for (var i = 0; i < dr.availablePrizes.length; i++) {
+        if(dr.availablePrizes[i].id === id){
+          return dr.availablePrizes[i].name;
         }
       }
     }
@@ -168,8 +168,10 @@ angular.module('aPpApp')
         // console.log(result);
         dr.activePromotion = result;
         loadPromotions();
+        getActivePromotion();
+        // initController();
       }, function () {
-        // console.log("Dialog dismissed");
+        console.log("Dialog dismissed");
       });
 
     }
@@ -180,8 +182,9 @@ angular.module('aPpApp')
 
     function executeDrawPrize(){
       DrawService.makeDrawPrizeProcess(dr.activePromotion.id).then(function(res){
-        console.log(res);
+        // console.log(res);
         getActivePromotion();
+        // initController();
         dr.completed = true;
       });
     }
@@ -197,6 +200,8 @@ angular.module('aPpApp')
         dr.draw = false;
         dr.completed = false;
         loadPromotions();
+        // getActivePromotion();
+        dr.activePromotion = {};
       });
     }
 
@@ -228,7 +233,7 @@ angular.module('aPpApp')
       });
 
       modalInstance.result.then(function (result){
-        console.log(result);
+        // console.log(result);
       }, function () {
         // console.log("Dialog dismissed");
       });

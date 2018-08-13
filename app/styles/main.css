@@ -88,3 +88,9 @@ body {
   /* overflow-y:scroll;
   max-height:250px; */
 }
+.scroll-products-buy{
+  max-height: 300px;
+  overflow-y: auto;
+  /* overflow-y:scroll;
+  max-height:250px; */
+}

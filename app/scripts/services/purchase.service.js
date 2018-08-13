@@ -34,7 +34,7 @@ angular.module('aPpApp')
         },
         data: JSON.stringify(transaction)
       };
-      return $http(req).then(handleSuccess, handleError('Error creating purchase transaction'));
+      return $http(req).then(handleSuccess, handleError);
     }
 
     function handleSuccess(res) {
@@ -42,9 +42,10 @@ angular.module('aPpApp')
     }
 
     function handleError(error) {
-        return function () {
-            return { success: false, message: error };
-        };
+      // console.log(error);
+      return { success: false, message: error.data.errors[0] };
+        // return function (error) {
+        // };
     }
 
     return service;

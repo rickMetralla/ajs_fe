@@ -8,7 +8,7 @@
  * Controller of the aPpApp
  */
 angular.module('aPpApp')
-  .controller('RegisterCtrl', ['UserService', 'UtilService', function (UserService, UtilService) {
+  .controller('RegisterCtrl', ['UserService', 'UtilService', '$scope', 'orderByFilter', function (UserService, UtilService, $scope, orderBy) {
 
     var vm = this;
     vm.registerNew = true;
@@ -19,6 +19,13 @@ angular.module('aPpApp')
     vm.editCustomer = editCustomer;
     vm.updateCustomer = updateCustomer; //need implementation
     vm.user = {};
+
+    vm.sortBy = function(propertyName){
+      $scope.reverse = (propertyName !== null && $scope.propertyName === propertyName)
+         ? !$scope.reverse : false;
+      $scope.propertyName = propertyName;
+      vm.allUsers = orderBy(vm.allUsers, $scope.propertyName, $scope.reverse);
+    };
 
     function register() {
       let message = UtilService.validateCustomerFields(vm.user);

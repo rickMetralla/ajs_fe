@@ -5,9 +5,9 @@
     <table ng-if="pc.products.length" class = "table table-striped table-bordered table-hover">
       <thead>
         <tr class = "info">
-          <th>Name</th>
+          <th ng-click="pc.sortBy('name')">Name</th>
           <th>Model</th>
-          <th>stock</th>
+          <th ng-click="pc.sortBy('stock')">Stock</th>
           <th>Action</th>
         </tr>
       </thead>

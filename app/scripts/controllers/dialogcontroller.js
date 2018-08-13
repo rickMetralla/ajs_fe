@@ -20,8 +20,6 @@ angular.module('aPpApp')
     initRegisterProductModal(params.productToEdit);
 
     function initRegisterProductModal(productToUpdate){
-      // console.log("inside modal");
-      // console.log(productToUpdate);
       if (productToUpdate !== undefined){
         dc.product.id = productToUpdate.id;
         dc.product.name = productToUpdate.name;
@@ -35,6 +33,10 @@ angular.module('aPpApp')
     };
 
     dc.ok = function () {
+      if(dc.model === null){
+        alert("Needs to select a Name of Model.");
+        return;
+      }
        var product = {
           name: dc.product.name,
           model: dc.model.name,

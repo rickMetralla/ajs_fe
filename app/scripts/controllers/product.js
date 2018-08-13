@@ -8,7 +8,9 @@
  * Controller of the aPpApp
  */
 angular.module('aPpApp')
-  .controller('ProductCtrl', ['UtilService', 'ProductService', '$uibModal', function (UtilService, ProductService, $uibModal) {
+  .controller('ProductCtrl', ['UtilService', 'ProductService', '$uibModal', '$scope', 'orderByFilter',
+  function (UtilService, ProductService, $uibModal, $scope, orderBy) {
+
     var vm = this;
     vm.openCreateProductDialog = openCreateProductDialog;
     vm.openEditProductDialog = openEditProductDialog;
@@ -23,6 +25,17 @@ angular.module('aPpApp')
     vm.products = [];
     vm.product = {};
     initProdServ();
+
+    // $scope.propertyName = 'name';
+    // $scope.reverse = true;
+    // vm.products = orderBy(vm.products, $scope.propertyName, $scope.reverse);
+
+    vm.sortBy = function(propertyName){
+      $scope.reverse = (propertyName !== null && $scope.propertyName === propertyName)
+         ? !$scope.reverse : false;
+      $scope.propertyName = propertyName;
+      vm.products = orderBy(vm.products, $scope.propertyName, $scope.reverse);
+    };
 
     function initProdServ(){
       loadAllModels();

@@ -58,15 +58,25 @@ angular.module('aPpApp')
     }
 
     apc.addPrizes = function(){
+      if(apc.availableCustomers.length < 5){
+        alert("Not possible to register more prizes, needs more customers, at least 5");
+        return;
+      }
       apc.createPrize = true;
     }
 
     apc.savePrize = function(prize){
+      // if(apc.availablePrizes.length < 5){
+      //   alert("Not possible to register more prizes, needs more customers, at least 5");
+      //   return;
+      // }
       apc.createPrize = false;
       prize.promoId = apc.promo.id;
       // console.log(prize);
       DrawService.registerPrize(prize).then(function(newPrize){
         apc.availablePrizes.push(newPrize);
+        apc.prize.name = '';
+        apc.prize.rank = '';
       });
     }
 
@@ -84,7 +94,11 @@ angular.module('aPpApp')
     };
 
     apc.confirm = function () {
-      console.log(apc.availablePrizes.length);
+      // console.log(apc.availablePrizes.length);
+      if(apc.availableCustomers.length === 0){
+        alert("Need more Available customers. Not possible to confirm.");
+        return;
+      }
       if(apc.availablePrizes.length === 0){
         alert("Need more Prizes. Not possible to confirm.");
         return;
