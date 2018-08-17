@@ -112,17 +112,17 @@ angular.module('aPpApp')
     }
 
     function getPromoStatusById(idPromo){
-      return $http.get('http://localhost:8080/promoStatus/'+ idPromo)
+      return $http.get('http://localhost:8080/promos/status/'+ idPromo)
         .then(handleSuccess, handleError("error while getting promo status by promo id"));
     }
 
     function getPromoStatus(idPromo){
-      return $http.get('http://localhost:8080/promoStatus/')
+      return $http.get('http://localhost:8080/promos/status/')
         .then(handleSuccess, handleError("error while getting promo status"));
     }
 
     function getPrizeDrawByPromoId(promoId){
-      return $http.get('http://localhost:8080/promos/' + promoId + '/prizedraws')
+      return $http.get('http://localhost:8080/promos/' + promoId + '/vouchers')
         .then(handleSuccess, handleError("error while getting the prizeDraws"));
     }
 
@@ -154,7 +154,7 @@ angular.module('aPpApp')
     }
 
     function getAllWinnersByPromoId(promoId, winner){
-      return $http.get('http://localhost:8080/promos/' + promoId + '/prizedraws/' + winner)
+      return $http.get('http://localhost:8080/promos/' + promoId + '/vouchers/' + winner)
         .then(handleSuccess, handleError("error while getting all winners by promo id"));
     }
 
